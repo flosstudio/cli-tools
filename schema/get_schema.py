@@ -21,7 +21,11 @@ def main(args=None):
         '-f', '--file',
         help="Save to file ", nargs='?', const='flosstudio.schema.json'
     )
-
+    argument_parser.add_argument(
+        '-u', '--human',
+        action='store_true',
+        help="Output a readable formatted json to stdout."
+    )
     args = argument_parser.parse_args(args)
 
     releases_repository = "https://api.github.com/repos/flosstudio/schema/releases/latest"
@@ -51,10 +55,12 @@ def main(args=None):
     if args.file:
         with open(args.file, 'wb') as dst_file:
             dst_file.write(file_res.content)
-    # else:
-    #     json.dump(file_res.json(), sys.stdout, indent=2)
-
-    return json.dump(file_res.json(), sys.stdout, indent=2)
+    else:
+        #     json.dump(file_res.json(), sys.stdout, indent=2)
+        if(args.human):
+            json.dump(file_res.json(), sys.stdout, indent=2)
+        else:
+            return file_res.json()
 
 
 if __name__ == '__main__':
