@@ -29,18 +29,32 @@ def main(args=None):
 
     # Get latest release url
     res = requests.get(releases_repository)
+
+    if not res:
+        print(f'Error fetching releases repository: {res.status_code}')
+        return 1
+
     assets = res.json()['assets']
-    schema_url = next(x for x in assets if x['name'] == asset_name)[
-        'browser_download_url']
+
+    schema_url = next((x for x in assets if x['name'] == asset_name), None)
+    if schema_url is None:
+        print(f'Releases Name not found: {asset_name}')
+        return 1
+
+    schema_entry = schema_url['browser_download_url']
+    file_res = requests.get(schema_entry)
+    if not file_res:
+        print(f'Error fetching schema release: {res.status_code}')
+        return 1
 
     # Download the file
-    file_res = requests.get(schema_url)
-
     if args.file:
         with open(args.file, 'wb') as dst_file:
             dst_file.write(file_res.content)
-    else:
-        json.dump(file_res.json(), sys.stdout, indent=2)
+    # else:
+    #     json.dump(file_res.json(), sys.stdout, indent=2)
+
+    return json.dump(file_res.json(), sys.stdout, indent=2)
 
 
 if __name__ == '__main__':
