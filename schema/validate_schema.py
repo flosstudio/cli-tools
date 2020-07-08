@@ -10,25 +10,25 @@ import sys
 import json
 import argparse
 import yaml
-import get_schema
 import jsonschema
 
 
-def main(args=None):
+def main(file, schema, json_flag):
     """
     Validate a YAML/JSON file against a schema file.
     """
-
-    raw_file = open(args.file, 'r')
-    parsed_file = raw_file.read()
+    schema = open(schema, 'r').read()
+    schema_contents = json.loads(schema)
+    raw_file = open(file, 'r')
+    file_contents = raw_file.read()
 
     #  If we get a yaml file convert it to json.
-    if not args.json:
-        parsed_file = yaml.load(parsed_file, Loader=yaml.FullLoader)
+    if not json_flag:
+        file_contents = yaml.load(file_contents, Loader=yaml.FullLoader)
 
-    schema = get_schema.main(args=None)
-    jsonschema.validate(instance=parsed_file, schema=schema)
-    print(f'[OK] Validation success for {args.file}')
+    jsonschema.validate(instance=file_contents, schema=schema_contents)
+
+    print(f'[OK] Validation success for {file}')
 
     return 0
 
@@ -44,5 +44,10 @@ if __name__ == '__main__':
         help="YAML/JSON File to validate.",
         required=True
     )
+    argument_parser.add_argument(
+        '-s', '--schema',
+        help="Schema file to validate against.",
+        required=True
+    )
     arguments = argument_parser.parse_args()
-    sys.exit(main(arguments) or 0)
+    sys.exit(main(arguments.file, arguments.schema, arguments.json) or 0)
