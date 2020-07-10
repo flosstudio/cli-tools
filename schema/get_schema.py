@@ -45,7 +45,6 @@ def main(args=None):
         with open(args.file, 'wb') as dst_file:
             dst_file.write(file_res.content)
     else:
-        #     json.dump(file_res.json(), sys.stdout, indent=2)
         if(args is not None and args.human):
             json.dump(file_res.json(), sys.stdout, indent=2)
         else:

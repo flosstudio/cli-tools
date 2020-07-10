@@ -16,12 +16,11 @@ def main(args=None):
     Validate all files in a folder against a schema file.
     """
 
-    # schema = open(args.schema, 'r').read()
-    # schema_contents = json.loads(schema)
     extension = 'json' if args.json else 'y*ml'
-    path = f'{args.folder}*.{extension}'
+    path = f'{args.folder}/*.{extension}'
 
     for file in glob.glob(path, recursive=args.recursive):
+        print(file)
         validate_schema.main(file, args.schema, args.json)
 
     print(f'\n [OK] Validation success for folder: {args.folder}')
