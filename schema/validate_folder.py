@@ -17,7 +17,8 @@ def main(args=None):
     """
 
     extension = 'json' if args.json else 'y*ml'
-    path = f'{args.folder}/*.{extension}'
+    recursive = '/**' if args.recursive else ''
+    path = f'{args.folder}{recursive}/*.{extension}'
 
     for file in glob.glob(path, recursive=args.recursive):
         print(file)
