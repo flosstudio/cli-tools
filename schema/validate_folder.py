@@ -21,7 +21,6 @@ def main(args=None):
     path = f'{args.folder}{recursive}/*.{extension}'
 
     for file in glob.glob(path, recursive=args.recursive):
-        print(file)
         validate_schema.main(file, args.schema, args.json)
 
     print(f'\n [OK] Validation success for folder: {args.folder}')
